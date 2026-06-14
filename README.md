@@ -1,207 +1,373 @@
-# Splitwise Clone
+# 💸 Splitwise Clone
 
-A premium Splitwise clone with group balance tracking, automated settlements, and real-time group chat for expenses.
+<div align="center">
 
-## Live URLs
-- **Live Frontend (Vercel):** `https://splitwise-clone-frontend.vercel.app` (Placeholder)
-- **Live Backend (Render):** `https://splitwise-clone-backend.onrender.com` (Placeholder)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+
+**A full-stack expense sharing application inspired by Splitwise.**  
+Split bills, track balances, settle debts, and chat in real time — all in one place.
+
+🌐 **[Live Demo →](https://splitwise-clone-beige.vercel.app)**
+
+</div>
 
 ---
 
-## 1. Local Setup Instructions
+## 📌 Table of Contents
+
+1. [Project Overview](#-project-overview)
+2. [Features](#-features)
+3. [Tech Stack](#-tech-stack)
+4. [Architecture Overview](#-architecture-overview)
+5. [Local Setup](#-local-setup)
+6. [Environment Variables](#-environment-variables)
+7. [API Documentation](#-api-documentation)
+8. [Deployment](#-deployment)
+9. [Screenshots](#-screenshots)
+10. [Future Enhancements](#-future-enhancements)
+11. [Author](#-author)
+12. [License](#-license)
+
+---
+
+## 🧾 Project Overview
+
+**Splitwise Clone** is a full-stack web application that helps groups of people manage shared expenses fairly and transparently. Users can register, create groups, add members, log shared expenses with multiple split strategies, track who owes what, and settle balances — all with a real-time chat attached to every expense.
+
+Built as a college project to demonstrate full-stack development skills including REST APIs, WebSocket integration, JWT authentication, and cloud deployment.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---|---|
+| 🔐 **User Auth** | Register and login with JWT access/refresh tokens stored in localStorage |
+| 📊 **Dashboard** | Overview of total owed, total you are owed, and net balance |
+| 👥 **Groups** | Create groups, add/remove members, view group details |
+| 💰 **Expenses** | Add expenses with equal, exact, percent, or shares split types |
+| ⚖️ **Balances** | Live per-group balance tracking for all members |
+| 🤝 **Settlements** | Record and view payments between members with balance impact detail |
+| 💬 **Real-time Chat** | WebSocket-powered chat on every expense page via Django Channels |
+| 📱 **Responsive UI** | Clean, mobile-friendly interface built with Tailwind CSS |
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+| Technology | Purpose |
+|---|---|
+| **React 18** | UI component framework |
+| **Vite** | Fast build tool and dev server |
+| **Tailwind CSS** | Utility-first CSS styling |
+| **React Router v6** | Client-side routing |
+| **Axios** | HTTP client for REST API calls |
+
+### Backend
+| Technology | Purpose |
+|---|---|
+| **Django 4** | Web framework and ORM |
+| **Django REST Framework** | REST API layer |
+| **Django Channels** | WebSocket support for real-time chat |
+| **Simple JWT** | JWT authentication |
+| **Gunicorn** | WSGI server for production |
+| **WhiteNoise** | Static file serving |
+
+### Database & Infrastructure
+| Technology | Purpose |
+|---|---|
+| **PostgreSQL** | Primary relational database |
+| **Railway** | Backend hosting (ASGI + WebSocket) |
+| **Vercel** | Frontend hosting (static SPA) |
+
+---
+
+## 🏗 Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Browser (Client)                     │
+│          React SPA  ←→  Axios  ←→  WebSocket            │
+└──────────────────────────┬──────────────────────────────┘
+                           │ HTTPS / WSS
+┌──────────────────────────▼──────────────────────────────┐
+│              Backend (Railway — Django ASGI)             │
+│                                                          │
+│   ┌──────────────┐   ┌────────────────────────────┐     │
+│   │  Django REST │   │   Django Channels (ASGI)   │     │
+│   │  Framework   │   │   WebSocket consumers      │     │
+│   └──────┬───────┘   └────────────┬───────────────┘     │
+│          │                        │                      │
+│   ┌──────▼────────────────────────▼───────────────┐     │
+│   │              Django ORM + Models               │     │
+│   └──────────────────────┬────────────────────────┘     │
+└──────────────────────────┼──────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────┐
+│                  PostgreSQL Database                      │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Request flow:**
+- REST calls (auth, groups, expenses, settlements) go over HTTPS via Axios → Django REST Framework
+- Chat messages flow over persistent WebSocket connections → Django Channels consumers → DB
+- JWT tokens are attached to every request via Axios interceptors
+
+---
+
+## 🚀 Local Setup
 
 ### Prerequisites
+
 - Python 3.10+
 - Node.js 18+
-- PostgreSQL 18 (local) or SQLite fallback
-- Redis (Optional, defaults to InMemory for local dev)
+- PostgreSQL 14+ (or SQLite as fallback)
+
+---
 
 ### Backend Setup
-1. Navigate to the `backend` folder:
-   ```bash
-   cd backend
-   ```
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   # Windows:
-   .venv\Scripts\activate
-   # macOS/Linux:
-   source .venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Configure local environment variables:
-   Create a `.env` file in the `backend/` folder:
-   ```env
-   SECRET_KEY=django-insecure-local-dev-key
-   DEBUG=True
 
-   DB_NAME=splitwise_db
-   DB_USER=postgres
-   DB_PASSWORD=postgres
-   DB_HOST=localhost
-   DB_PORT=5433
+```bash
+# 1. Navigate to backend
+cd backend
 
-   CORS_ALLOW_ALL_ORIGINS=True
-   CHANNEL_LAYER_BACKEND=channels.layers.InMemoryChannelLayer
-   ```
-   > **Note:** This project's local PostgreSQL 18 instance runs on port **5433** (not the default 5432). Adjust `DB_PORT` if your installation differs.
+# 2. Create and activate virtual environment
+python -m venv .venv
 
-5. Create the local PostgreSQL database (if it does not exist):
-   ```sql
-   CREATE DATABASE splitwise_db;
-   ```
-6. Run database migrations:
-   ```bash
-   python manage.py migrate
-   ```
-7. Verify PostgreSQL is active:
-   ```bash
-   python manage.py shell -c "from django.db import connection; print(connection.settings_dict['ENGINE'])"
-   ```
-   Expected output: `django.db.backends.postgresql`
-8. Run the local backend server (Daphne for local ASGI/WebSocket testing):
-   ```bash
-   python manage.py runserver
-   ```
-   *The server will start on `http://127.0.0.1:8000`.*
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+source .venv/bin/activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run migrations
+python manage.py migrate
+
+# 5. Start the server
+python manage.py runserver
+```
+
+> Backend runs at `http://127.0.0.1:8000`
+
+---
 
 ### Frontend Setup
-1. Navigate to the `frontend` folder:
-   ```bash
-   cd frontend
-   ```
-2. Install npm dependencies:
-   ```bash
-   npm install
-   ```
-3. Configure local environment variables:
-   Create a `.env` file in the `frontend/` folder:
-   ```env
-   VITE_API_BASE_URL=http://localhost:8000
-   ```
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-   *The frontend will run on `http://localhost:5173`.*
+
+```bash
+# 1. Navigate to frontend
+cd frontend
+
+# 2. Install dependencies
+npm install
+
+# 3. Start dev server
+npm run dev
+```
+
+> Frontend runs at `http://localhost:5173`
 
 ---
 
-## 2. Local Database Configuration (PostgreSQL 18)
+## 🔑 Environment Variables
 
-The backend selects a database using this priority order:
+### `backend/.env`
 
-1. **`DATABASE_URL`** — used for production (e.g. Neon PostgreSQL on Render)
-2. **`DB_*` environment variables** — used for local PostgreSQL 18
-3. **SQLite fallback** — `backend/db.sqlite3` is used only if PostgreSQL is unreachable
+```env
+SECRET_KEY=django-insecure-local-dev-key
+DEBUG=True
 
-### Local PostgreSQL 18 setup (verified)
+# PostgreSQL (local)
+DB_NAME=splitwise_db
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
 
-| Setting | Value |
+CORS_ALLOW_ALL_ORIGINS=True
+CHANNEL_LAYER_BACKEND=channels.layers.InMemoryChannelLayer
+```
+
+> **Database priority:** `DATABASE_URL` (production) → `DB_*` variables (local PostgreSQL) → SQLite fallback
+
+### `frontend/.env`
+
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+### Production environment variables (Railway)
+
+| Variable | Value |
 |---|---|
-| Database | `splitwise_db` |
-| User | `postgres` |
-| Host | `localhost` |
-| Port | `5433` |
-
-### Migration from SQLite to PostgreSQL
-
-1. Ensure PostgreSQL 18 is running (`postgresql-x64-18` service on Windows).
-2. Create the database: `CREATE DATABASE splitwise_db;`
-3. Set `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, and `DB_PORT` in `backend/.env`.
-4. Remove any `DATABASE_ENGINE=django.db.backends.sqlite3` override (no longer needed).
-5. Run `python manage.py migrate`.
-6. Confirm the engine: `django.db.backends.postgresql`.
-7. Smoke-test: register, login, create group/expense/settlement, and expense chat.
-
-The original `backend/db.sqlite3` file is preserved as a revert option. To fall back, unset `DB_*` variables or stop PostgreSQL — the app will reconnect to SQLite automatically.
+| `SECRET_KEY` | A secure random string |
+| `DEBUG` | `False` |
+| `ALLOWED_HOSTS` | Your Railway domain |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `CORS_ALLOW_ALL_ORIGINS` | `True` or your Vercel domain |
+| `CHANNEL_LAYER_BACKEND` | `channels.layers.InMemoryChannelLayer` |
 
 ---
 
-## 3. Database Setup (Neon PostgreSQL)
+## 📡 API Documentation
 
-1. Go to [Neon.tech](https://neon.tech/) and sign up / create a new project.
-2. Select **PostgreSQL 16** or above.
-3. In the Neon Dashboard, copy the connection string from the **Connection Details** box. It will look like:
-   `postgresql://alex:AbCdEf123456@ep-cool-snowflake-123456.us-east-2.aws.neon.tech/neondb?sslmode=require`
-4. Use this connection string as the `DATABASE_URL` environment variable in the backend. The backend is configured to automatically parse this URL and require SSL.
+### Base URL
+```
+https://splitwise-clone-production-0c22.up.railway.app
+```
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/register/` | Register a new user |
+| `POST` | `/api/auth/login/` | Login and receive JWT tokens |
+
+### Dashboard
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/dashboard/` | Full dashboard data |
+| `GET` | `/api/dashboard/summary/` | Balance summary (owe / owed / net) |
+
+### Groups
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/groups/` | List all groups for the user |
+| `POST` | `/api/groups/` | Create a new group |
+| `GET` | `/api/groups/:id/` | Get group details |
+| `POST` | `/api/groups/:id/members/` | Add a member to a group |
+| `DELETE` | `/api/groups/:id/members/` | Remove a member from a group |
+| `GET` | `/api/groups/:id/balances/` | Get balances for a group |
+
+### Expenses
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/expenses/` | List expenses |
+| `POST` | `/api/expenses/` | Create a new expense |
+| `GET` | `/api/expenses/:id/` | Get expense details |
+| `DELETE` | `/api/expenses/:id/` | Delete an expense |
+
+### Settlements
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/settlements/` | List settlements |
+| `POST` | `/api/settlements/` | Record a settlement |
+| `GET` | `/api/settlements/:id/` | Get settlement details |
+
+### Chat
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/chat/messages/?expense=:id` | Fetch chat history for an expense |
+| `WS` | `ws://.../ws/expenses/:id/?token=` | WebSocket connection for live chat |
+
+> All endpoints except register and login require `Authorization: Bearer <access_token>` header.
 
 ---
 
-## 4. Backend Deployment (Render)
+## 🌐 Deployment
 
-Render is used to deploy the Django ASGI application, supporting both standard REST endpoints and Channels WebSockets.
+| Service | Platform | URL |
+|---|---|---|
+| 🖥 **Frontend** | Vercel | [https://splitwise-clone-beige.vercel.app](https://splitwise-clone-beige.vercel.app) |
+| ⚙️ **Backend** | Railway | [https://splitwise-clone-production-0c22.up.railway.app](https://splitwise-clone-production-0c22.up.railway.app) |
+| 🗄 **Database** | PostgreSQL (Railway) | Managed via `DATABASE_URL` |
 
-### Render Web Service Setup
-1. Create a new **Web Service** on Render and connect your repository.
-2. Configure settings:
-   - **Environment:** `Python`
-   - **Build Command:**
-     ```bash
-     pip install -r requirements.txt
-     python manage.py collectstatic --noinput
-     python manage.py migrate
-     ```
-   - **Start Command:**
-     ```bash
-     daphne -b 0.0.0.0 -p $PORT splitwise_backend.asgi:application
-     ```
-3. Add the following **Environment Variables** in Render dashboard:
-   - `SECRET_KEY`: *[Insert a secure random string]*
-   - `DEBUG`: `False`
-   - `ALLOWED_HOSTS`: `splitwise-clone-backend.onrender.com,localhost` *(Replace with your actual Render URL)*
-   - `CORS_ALLOW_ALL_ORIGINS`: `True` *(or specify your Vercel frontend domain)*
-   - `DATABASE_URL`: *[Insert your Neon PostgreSQL Connection String]*
-   - `CHANNEL_LAYER_BACKEND`: `channels.layers.InMemoryChannelLayer` *(or configure `channels_redis.core.RedisChannelLayer` and supply `REDIS_URL` if deploying a managed Redis instance on Render for horizontal scaling)*
+### Frontend Deployment (Vercel)
 
----
+1. Import the repository on [Vercel](https://vercel.com)
+2. Set **Root Directory** to `frontend`
+3. Set **Framework Preset** to `Vite`
+4. Add environment variable: `VITE_API_BASE_URL` → your Railway backend URL
+5. Deploy
 
-## 5. Frontend Deployment (Vercel)
+### Backend Deployment (Railway)
 
-Vercel is used to host the static React SPA built with Vite.
-
-### Vercel Project Setup
-1. Create a new project on Vercel and import your repository.
-2. Configure the directory settings:
-   - **Root Directory:** `frontend`
-3. Configure Build and Output settings:
-   - **Framework Preset:** `Vite`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-4. Add the following **Environment Variable** in Vercel dashboard:
-   - `VITE_API_BASE_URL`: `https://splitwise-clone-backend.onrender.com` *(Replace with your actual live Render Web Service URL)*
-5. Click **Deploy**. Vercel will build the frontend assets and host them on a custom subdomain.
+1. Connect your repository on [Railway](https://railway.app)
+2. Set the **Start Command:**
+   ```bash
+   gunicorn splitwise_backend.asgi:application -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+   ```
+3. Add all required environment variables from the table above
 
 ---
 
-## 6. Production Verification Checklist
+## 📸 Screenshots
 
-Follow this checklist to verify the health and functional status of the production environment:
+> _Add screenshots here after deployment_
 
-- [ ] **Login/Register:**
-  - Create a new account on the register page.
-  - Log out and log back in, verifying JWT tokens are generated, stored in `localStorage`, and authorized correctly.
-- [ ] **Dashboard:**
-  - Verify that summary counters (Total You Owe, Total You Are Owed, Net Balance) render as `$0.00` initially.
-- [ ] **Groups:**
-  - Create a new Group and verify it appears in the dashboard overview.
-  - Add group members using valid user IDs.
-- [ ] **Expenses:**
-  - Add an expense to a group, selecting split types (equally, exact, percent, or shares).
-  - Verify expense entries appear in the group details page.
-- [ ] **Balances:**
-  - Confirm the debt balances update instantly in the group summary view for all members.
-- [ ] **Settlements:**
-  - Click the **Settle Up** button, record a settlement between a debtor and a creditor.
-  - Verify the settlement is recorded and balances adjust instantly to reflect the payment.
-  - Click on the settlement entry in the settlement history and verify it navigates to `/settlements/:settlementId` displaying full detail cards (Payer, Receiver, Amount, Group, Created At, and Balance Impact).
-- [ ] **Chat:**
-  - Navigate to the **Expense Details** page of any expense.
-  - Confirm the connection status indicator changes to **Connected** (green badge).
-  - Send messages and confirm they are immediately dispatched over WebSockets and saved.
-  - Open the same page in another session, verify real-time chat sync (instant left/right messaging alignment).
-  - Verify that a user who is not an expense participant is blocked with an `"Access Denied"` banner and input controls are disabled.
+| Page | Preview |
+|---|---|
+| Login | `screenshots/login.png` |
+| Register | `screenshots/register.png` |
+| Dashboard | `screenshots/dashboard.png` |
+| Group Details | `screenshots/group.png` |
+| Expense Details + Chat | `screenshots/expense-chat.png` |
+| Settlement Details | `screenshots/settlement.png` |
+
+---
+
+## 🔮 Future Enhancements
+
+- [ ] 📧 Email notifications for new expenses and settlements
+- [ ] 📲 PWA support for mobile install
+- [ ] 🔄 Recurring expenses
+- [ ] 📊 Spending analytics and charts per group
+- [ ] 🌍 Multi-currency support
+- [ ] 🔔 In-app push notifications via WebSockets
+- [ ] 👤 User profile page with avatar upload
+- [ ] 🧾 Export expense history as PDF/CSV
+
+---
+
+## 👨‍💻 Author
+
+**Sunny Kumar**
+
+- 🎓 College Project — Full Stack Development
+- 💼 Built for portfolio, internship applications, and university submission
+- 🔗 GitHub: [Add your GitHub profile URL here]
+- 📧 Email: [Add your email here]
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2024 Sunny Kumar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+```
+
+---
+
+<div align="center">
+
+Made with ❤️ by **Sunny Kumar**
+
+⭐ Star this repo if you found it helpful!
+
+</div>
