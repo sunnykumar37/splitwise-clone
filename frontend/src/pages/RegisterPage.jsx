@@ -90,7 +90,7 @@ export default function RegisterPage() {
         </p>
         <h2 className="mt-3 text-3xl font-semibold text-slate-900">Register</h2>
         <p className="mt-4 text-sm leading-6 text-slate-600">
-          Create your account with a name, email, and password. Registration signs you in immediately.
+          Start sharing expenses smarter with a premium group experience.
         </p>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
@@ -164,18 +164,56 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      <aside className="rounded-3xl border border-slate-200 bg-white p-8 shadow-soft">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">
-          Backend contract
-        </p>
-        <h3 className="mt-3 text-2xl font-semibold text-slate-900">Register endpoint</h3>
-        <p className="mt-4 text-sm leading-6 text-slate-600">
-          The app posts to <span className="font-semibold text-slate-900">POST /api/auth/register/</span>
-          using the documented backend fields: <span className="font-semibold text-slate-900">username</span>,
-          <span className="font-semibold text-slate-900"> email</span>, <span className="font-semibold text-slate-900">password</span>,
-          <span className="font-semibold text-slate-900"> first_name</span>, and
-          <span className="font-semibold text-slate-900"> last_name</span>.
-        </p>
+      <aside className="relative hidden items-stretch overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-soft lg:flex">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-600" />
+        <div className="pointer-events-none absolute -top-16 -left-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/5 blur-3xl" />
+
+        <div className="relative flex w-full flex-col justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 glass-card">
+              🚀 Premium group experience
+            </div>
+
+            <h3 className="mt-5 text-4xl font-semibold leading-tight text-white">Start sharing expenses smarter.</h3>
+            <p className="mt-4 text-sm leading-6 text-white/80">
+              Create groups, split bills instantly, and never lose track of who owes what.
+            </p>
+
+            <div className="mt-6 grid gap-3">
+              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Create Unlimited Groups</p>
+                  <p className="mt-1 text-xs text-white/70">Invite friends, roommates, and teams.</p>
+                </div>
+              </div>
+
+              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Split Expenses Fairly</p>
+                  <p className="mt-1 text-xs text-white/70">Accurate splits every time.</p>
+                </div>
+              </div>
+
+              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Instant Settlements</p>
+                  <p className="mt-1 text-xs text-white/70">Settle up with confidence.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <div className="rounded-2xl bg-white/10 px-4 py-3 text-xs text-white/85 backdrop-blur">
+              Join thousands simplifying shared finances.
+            </div>
+          </div>
+        </div>
       </aside>
     </section>
   );

@@ -26,10 +26,10 @@ export default function AppLayout() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-600">
-              Splitwise Clone
+              SplitWise Clone
             </p>
             <h1 className="text-lg font-semibold text-slate-900">
-              Frontend Setup
+              Shared expenses made simple.
             </h1>
           </div>
 

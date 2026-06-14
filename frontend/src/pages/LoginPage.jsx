@@ -83,7 +83,7 @@ export default function LoginPage() {
         </p>
         <h2 className="mt-3 text-3xl font-semibold text-slate-900">Login</h2>
         <p className="mt-4 text-sm leading-6 text-slate-600">
-          Use your email address to sign in and continue to your groups and expenses.
+          Sign in to manage shared expenses, settle balances, and message your group.
         </p>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
@@ -98,8 +98,11 @@ export default function LoginPage() {
               autoComplete="email"
               value={formData.login}
               onChange={updateField}
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-brand-600 focus:ring-4 focus:ring-brand-50"
+              className={`w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 outline-none transition focus:ring-4 focus:ring-brand-50 ${
+                fieldErrors.login ? "border-red-300 focus:border-red-600 focus:ring-red-50" : "border-slate-300 focus:border-brand-600"
+              }`}
               placeholder="alice@example.com"
+              aria-invalid={Boolean(fieldErrors.login)}
             />
             {fieldErrors.login ? <p className="mt-2 text-sm text-red-600">{fieldErrors.login}</p> : null}
           </div>
@@ -115,8 +118,11 @@ export default function LoginPage() {
               autoComplete="current-password"
               value={formData.password}
               onChange={updateField}
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-brand-600 focus:ring-4 focus:ring-brand-50"
+              className={`w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 outline-none transition focus:ring-4 focus:ring-brand-50 ${
+                fieldErrors.password ? "border-red-300 focus:border-red-600 focus:ring-red-50" : "border-slate-300 focus:border-brand-600"
+              }`}
               placeholder="Enter your password"
+              aria-invalid={Boolean(fieldErrors.password)}
             />
             {fieldErrors.password ? <p className="mt-2 text-sm text-red-600">{fieldErrors.password}</p> : null}
           </div>
@@ -126,30 +132,82 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-brand-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {submitting ? "Logging in..." : "Login"}
+            {submitting ? (
+              <span className="inline-flex items-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />
+                Logging in...
+              </span>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 
         <p className="mt-6 text-sm text-slate-600">
           Need an account?{" "}
-          <Link to="/register" className="font-semibold text-brand-700 hover:text-brand-600">
+          <Link to="/register" className="font-semibold text-brand-700 hover:text-brand-600 transition">
             Register here
           </Link>
         </p>
       </div>
 
-      <aside className="rounded-3xl border border-slate-200 bg-slate-950 p-8 text-white shadow-soft">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-50/80">
-          Backend contract
-        </p>
-        <h3 className="mt-3 text-2xl font-semibold">Login endpoint</h3>
-        <p className="mt-4 text-sm leading-6 text-slate-300">
-          This form posts to <span className="font-semibold text-white">POST /api/auth/login/</span>
-          and expects the documented <span className="font-semibold text-white">login</span> and
-          <span className="font-semibold text-white">password</span> fields.
-        </p>
+      <aside className="relative hidden items-stretch overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-soft lg:flex">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-600" />
+        <div className="pointer-events-none absolute -top-16 -left-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/5 blur-3xl" />
+
+        <div className="relative flex w-full flex-col justify-between">
+          <div>
+            <div className="glass-card inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/90">
+              <span aria-hidden="true">✨</span>
+              SaaS-ready expense sharing
+            </div>
+
+            <h3 className="mt-5 text-4xl font-semibold leading-tight text-white">
+              Split expenses.
+              <br />
+              Stay connected.
+            </h3>
+            <p className="mt-4 text-sm leading-6 text-white/80">
+              Track shared expenses, settle balances effortlessly, and chat with your group members in real time.
+            </p>
+
+            <div className="mt-6 grid gap-3">
+              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Real-time Expense Chat</p>
+                  <p className="mt-1 text-xs text-white/70">Coordinate in-app without leaving the flow.</p>
+                </div>
+              </div>
+
+              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Smart Balance Tracking</p>
+                  <p className="mt-1 text-xs text-white/70">See net balances and who owes whom.</p>
+                </div>
+              </div>
+
+              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Group Expense Management</p>
+                  <p className="mt-1 text-xs text-white/70">Add members, create expenses, and settle up.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <div className="rounded-2xl bg-white/10 px-4 py-3 text-xs text-white/85 backdrop-blur">
+              Trusted by students, roommates, travellers, and teams.
+            </div>
+          </div>
+        </div>
       </aside>
     </section>
   );
