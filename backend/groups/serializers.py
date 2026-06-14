@@ -40,20 +40,31 @@ class GroupUpdateSerializer(serializers.ModelSerializer):
 
 
 class GroupMemberAddSerializer(serializers.Serializer):
-    user_id = serializers.IntegerField()
+    email = serializers.EmailField()
     role = serializers.ChoiceField(choices=GroupMember.Role.choices, required=False, default=GroupMember.Role.MEMBER)
+
 
     def __init__(self, *args, **kwargs):
         self.group = kwargs.pop("group", None)
         super().__init__(*args, **kwargs)
 
 
-    def validate_user_id(self, value):
-        if not User.objects.filter(id=value).exists():
-            raise serializers.ValidationError("User does not exist")
-        if self.group and GroupMember.objects.filter(group=self.group, user_id=value).exists():
-            raise serializers.ValidationError("User is already a member of this group")
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "User with this email does not exist.",
+                code="user_not_found",
+            )
+
+        if self.group and GroupMember.objects.filter(group=self.group, user__email=value).exists():
+            raise serializers.ValidationError(
+                "User is already a member of this group.",
+                code="already_member",
+            )
+
         return value
+
+
 
 
 class GroupMemberRemoveSerializer(serializers.Serializer):

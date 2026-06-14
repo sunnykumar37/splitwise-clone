@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
@@ -7,11 +8,19 @@ from common.responses import success_response
 from common.services import BalanceService
 
 from .permissions import IsAuthenticatedGroupEndpoint, IsGroupCreatorPermission, IsGroupMemberPermission
-from .models import Group
-from .serializers import GroupCreateSerializer, GroupMemberAddSerializer, GroupMemberRemoveSerializer, GroupMemberSerializer, GroupSerializer, GroupUpdateSerializer
+from .models import Group, GroupMember
+from .serializers import (
+    GroupCreateSerializer,
+    GroupMemberAddSerializer,
+    GroupMemberRemoveSerializer,
+    GroupMemberSerializer,
+    GroupSerializer,
+    GroupUpdateSerializer,
+)
 from .services import GroupService
 
 User = get_user_model()
+
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -80,9 +89,33 @@ class GroupViewSet(viewsets.ModelViewSet):
         group = self.get_object()
         serializer = GroupMemberAddSerializer(data=request.data, group=group)
         serializer.is_valid(raise_exception=True)
-        user = get_object_or_404(User, id=serializer.validated_data["user_id"])
-        membership = GroupService.add_member(group=group, user=user, role=serializer.validated_data.get("role"))
+
+        email = serializer.validated_data["email"]
+        role = serializer.validated_data.get("role")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Field-level error for frontend
+            raise ValidationError({
+                "email": "User with this email does not exist."
+            })
+
+        if GroupMember.objects.filter(group=group, user=user).exists():
+            raise ValidationError({
+                "email": "User is already a member of this group."
+            })
+
+        membership = GroupMember.objects.create(
+            group=group,
+            user=user,
+            role=role,
+        )
+
         return success_response(GroupMemberSerializer(membership).data, "Member added", 201)
+
+
+
 
     @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated, IsGroupCreatorPermission], url_path="remove-member")
     def remove_member(self, request, pk=None):

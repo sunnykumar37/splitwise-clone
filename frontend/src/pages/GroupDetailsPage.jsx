@@ -29,7 +29,7 @@ export default function GroupDetailsPage() {
   const [settlementsError, setSettlementsError] = useState("");
   const [balancesError, setBalancesError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [memberId, setMemberId] = useState("");
+  const [memberEmail, setMemberEmail] = useState("");
   const [memberRole, setMemberRole] = useState("MEMBER");
   const [memberActionLoading, setMemberActionLoading] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
@@ -159,10 +159,10 @@ export default function GroupDetailsPage() {
 
     try {
       await addGroupMember(id, {
-        user_id: Number(memberId),
+        email: memberEmail.trim(),
         role: memberRole,
       });
-      setMemberId("");
+      setMemberEmail("");
       setMemberRole("MEMBER");
       setSuccessMessage("Member added successfully.");
       await refreshGroupData();
@@ -566,14 +566,13 @@ if (error && !group) {
 
           <form className="mt-6 grid gap-4 md:grid-cols-[1fr_200px_auto]" onSubmit={handleAddMember}>
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">User ID</span>
+              <span className="mb-2 block text-sm font-medium text-slate-700">Email</span>
               <input
-                type="number"
-                min="1"
-                value={memberId}
-                onChange={(event) => setMemberId(event.target.value)}
+                type="email"
+                value={memberEmail}
+                onChange={(event) => setMemberEmail(event.target.value)}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-600"
-                placeholder="2"
+                placeholder="Enter registered email"
               />
             </label>
 
