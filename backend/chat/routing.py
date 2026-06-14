@@ -1,0 +1,1 @@
+from .websocket_urls import websocket_urlpatterns
