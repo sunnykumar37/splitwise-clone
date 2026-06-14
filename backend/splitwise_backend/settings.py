@@ -13,6 +13,9 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "*").split(",") if host.strip()]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://splitwise-clone-production-0c22.up.railway.app",
+]
 INSTALLED_APPS = [
     "daphne",
     "django.contrib.admin",
