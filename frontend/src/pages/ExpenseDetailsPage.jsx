@@ -289,21 +289,21 @@ export default function ExpenseDetailsPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Amount</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">{formatMoney(expense?.amount)}</p>
+        <div className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-blue-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-indigo-600">Amount</p>
+          <p className="mt-3 text-lg font-semibold text-indigo-900">{formatMoney(expense?.amount)}</p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Paid By</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">{expense?.paid_by?.username || "-"}</p>
+        <div className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-emerald-600">Paid By</p>
+          <p className="mt-3 text-lg font-semibold text-emerald-900">{expense?.paid_by?.username || "-"}</p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Split Type</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">{expense?.split_type || "-"}</p>
+        <div className="rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-purple-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-violet-600">Split Type</p>
+          <p className="mt-3 text-lg font-semibold text-violet-900">{expense?.split_type || "-"}</p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Created At</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">
+        <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-yellow-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-amber-600">Created At</p>
+          <p className="mt-3 text-lg font-semibold text-amber-900">
             {expense?.created_at ? new Date(expense.created_at).toLocaleString() : "-"}
           </p>
         </div>

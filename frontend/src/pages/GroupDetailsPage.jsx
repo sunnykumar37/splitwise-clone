@@ -331,23 +331,32 @@ if (error && !group) {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Total You Owe</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">
+        <div className="rounded-3xl border border-red-100 bg-gradient-to-br from-red-50 to-rose-100 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 text-base">💸</span>
+            <p className="text-sm font-medium text-red-600">Total You Owe</p>
+          </div>
+          <p className="mt-3 text-3xl font-semibold text-red-700">
             {balancesLoading ? "Loading..." : balancesError ? "Error" : formatMoney(balances?.you_owe)}
           </p>
           {balancesError && <p className="mt-1 text-xs text-red-600">{balancesError}</p>}
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Total You Are Owed</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">
+        <div className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-100 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-base">💰</span>
+            <p className="text-sm font-medium text-emerald-600">Total You Are Owed</p>
+          </div>
+          <p className="mt-3 text-3xl font-semibold text-emerald-700">
             {balancesLoading ? "Loading..." : balancesError ? "Error" : formatMoney(balances?.you_are_owed)}
           </p>
           {balancesError && <p className="mt-1 text-xs text-red-600">{balancesError}</p>}
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Net Balance</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">
+        <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-100 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-base">⚖️</span>
+            <p className="text-sm font-medium text-blue-600">Net Balance</p>
+          </div>
+          <p className="mt-3 text-3xl font-semibold text-blue-700">
             {balancesLoading ? "Loading..." : balancesError ? "Error" : formatMoney(balances?.net_balance)}
           </p>
           {balancesError && <p className="mt-1 text-xs text-red-600">{balancesError}</p>}
@@ -477,21 +486,21 @@ if (error && !group) {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Creator</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">
+        <div className="rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 to-purple-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-violet-600">Creator</p>
+          <p className="mt-3 text-lg font-semibold text-violet-900">
             {creator ? `${creator.username}${creator.email ? ` (${creator.email})` : ""}` : `User #${creatorId || "-"}`}
           </p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Created At</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">
+        <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-yellow-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-amber-600">Created At</p>
+          <p className="mt-3 text-lg font-semibold text-amber-900">
             {group?.created_at ? new Date(group.created_at).toLocaleString() : "-"}
           </p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Role</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">
+        <div className="rounded-3xl border border-teal-100 bg-gradient-to-br from-teal-50 to-cyan-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-teal-600">Role</p>
+          <p className="mt-3 text-lg font-semibold text-teal-900">
             {isCreator ? "Creator" : "Member"}
           </p>
         </div>

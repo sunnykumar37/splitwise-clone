@@ -107,21 +107,21 @@ export default function SettlementDetailsPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Payer</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">{settlement?.payer?.username || "-"}</p>
+        <div className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-blue-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-indigo-600">Payer</p>
+          <p className="mt-3 text-lg font-semibold text-indigo-900">{settlement?.payer?.username || "-"}</p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Receiver</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">{settlement?.receiver?.username || "-"}</p>
+        <div className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-emerald-600">Receiver</p>
+          <p className="mt-3 text-lg font-semibold text-emerald-900">{settlement?.receiver?.username || "-"}</p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Amount</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">{formatMoney(settlement?.amount)}</p>
+        <div className="rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-50 to-red-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-rose-600">Amount</p>
+          <p className="mt-3 text-lg font-semibold text-rose-900">{formatMoney(settlement?.amount)}</p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Created At</p>
-          <p className="mt-3 text-lg font-semibold text-slate-900">
+        <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-yellow-100 p-6 shadow-soft">
+          <p className="text-sm font-medium text-amber-600">Created At</p>
+          <p className="mt-3 text-lg font-semibold text-amber-900">
             {settlement?.created_at ? new Date(settlement.created_at).toLocaleString() : "-"}
           </p>
         </div>

@@ -2,37 +2,39 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+function EyeIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 012.318-3.95M6.53 6.53A9.97 9.97 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.293 5.265M15 12a3 3 0 00-3-3m0 0a3 3 0 00-2.83 2M3 3l18 18" />
+    </svg>
+  );
+}
+
 function getErrorMessage(error) {
   const response = error?.response?.data;
-
-  if (typeof response?.message === "string") {
-    return response.message;
-  }
-
-  if (typeof response?.detail === "string") {
-    return response.detail;
-  }
-
-  if (typeof response === "string") {
-    return response;
-  }
-
+  if (typeof response?.message === "string") return response.message;
+  if (typeof response?.detail === "string") return response.detail;
+  if (typeof response === "string") return response;
   return error?.message || "Unable to log in.";
 }
 
 function validate(values) {
   const nextErrors = {};
-
   if (!values.login.trim()) {
     nextErrors.login = "Email is required.";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.login.trim())) {
     nextErrors.login = "Enter a valid email address.";
   }
-
-  if (!values.password) {
-    nextErrors.password = "Password is required.";
-  }
-
+  if (!values.password) nextErrors.password = "Password is required.";
   return nextErrors;
 }
 
@@ -43,6 +45,7 @@ export default function LoginPage() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const updateField = (event) => {
     const { name, value } = event.target;
@@ -51,22 +54,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const nextErrors = validate(formData);
     setFieldErrors(nextErrors);
     setSubmitError("");
-
-    if (Object.keys(nextErrors).length > 0) {
-      return;
-    }
-
+    if (Object.keys(nextErrors).length > 0) return;
     setSubmitting(true);
-
     try {
-      await login({
-        login: formData.login.trim(),
-        password: formData.password,
-      });
+      await login({ login: formData.login.trim(), password: formData.password });
       navigate("/dashboard", { replace: true });
     } catch (error) {
       setSubmitError(getErrorMessage(error));
@@ -76,139 +70,128 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-soft">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">
-          Welcome back
-        </p>
-        <h2 className="mt-3 text-3xl font-semibold text-slate-900">Login</h2>
-        <p className="mt-4 text-sm leading-6 text-slate-600">
-          Sign in to manage shared expenses, settle balances, and message your group.
-        </p>
+    <div className="relative min-h-screen flex items-center justify-center px-4 py-16 overflow-hidden bg-slate-50">
+      {/* Light soft background orbs */}
+      <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-indigo-200/50 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 h-[420px] w-[420px] rounded-full bg-purple-200/50 blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-blue-100/60 blur-3xl" />
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700" htmlFor="login">
-              Email
-            </label>
-            <input
-              id="login"
-              name="login"
-              type="email"
-              autoComplete="email"
-              value={formData.login}
-              onChange={updateField}
-              className={`w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 outline-none transition focus:ring-4 focus:ring-brand-50 ${
-                fieldErrors.login ? "border-red-300 focus:border-red-600 focus:ring-red-50" : "border-slate-300 focus:border-brand-600"
-              }`}
-              placeholder="alice@example.com"
-              aria-invalid={Boolean(fieldErrors.login)}
-            />
-            {fieldErrors.login ? <p className="mt-2 text-sm text-red-600">{fieldErrors.login}</p> : null}
-          </div>
+      <section className="relative mx-auto grid w-full max-w-4xl gap-8 lg:grid-cols-[1fr_1fr]">
+        {/* Form card */}
+        <div className="rounded-3xl border border-white/20 bg-white/95 p-8 shadow-2xl backdrop-blur-xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-600">Welcome back</p>
+          <h2 className="mt-3 text-3xl font-semibold text-slate-900">Login</h2>
+          <p className="mt-4 text-sm leading-6 text-slate-500">
+            Sign in to manage shared expenses, settle balances, and message your group.
+          </p>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700" htmlFor="password">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={updateField}
-              className={`w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 outline-none transition focus:ring-4 focus:ring-brand-50 ${
-                fieldErrors.password ? "border-red-300 focus:border-red-600 focus:ring-red-50" : "border-slate-300 focus:border-brand-600"
-              }`}
-              placeholder="Enter your password"
-              aria-invalid={Boolean(fieldErrors.password)}
-            />
-            {fieldErrors.password ? <p className="mt-2 text-sm text-red-600">{fieldErrors.password}</p> : null}
-          </div>
-
-          {submitError ? <p className="text-sm text-red-600">{submitError}</p> : null}
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="inline-flex w-full items-center justify-center rounded-2xl bg-brand-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {submitting ? (
-              <span className="inline-flex items-center gap-2">
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />
-                Logging in...
-              </span>
-            ) : (
-              "Login"
-            )}
-          </button>
-        </form>
-
-        <p className="mt-6 text-sm text-slate-600">
-          Need an account?{" "}
-          <Link to="/register" className="font-semibold text-brand-700 hover:text-brand-600 transition">
-            Register here
-          </Link>
-        </p>
-      </div>
-
-      <aside className="relative hidden items-stretch overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-soft lg:flex">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-600" />
-        <div className="pointer-events-none absolute -top-16 -left-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
-        <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/5 blur-3xl" />
-
-        <div className="relative flex w-full flex-col justify-between">
-          <div>
-            <div className="glass-card inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/90">
-              <span aria-hidden="true">✨</span>
-              SaaS-ready expense sharing
+          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700" htmlFor="login">Email</label>
+              <input
+                id="login"
+                name="login"
+                type="email"
+                autoComplete="email"
+                value={formData.login}
+                onChange={updateField}
+                className={`w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 outline-none transition focus:ring-4 ${
+                  fieldErrors.login ? "border-red-300 focus:border-red-500 focus:ring-red-50" : "border-slate-300 focus:border-indigo-500 focus:ring-indigo-50"
+                }`}
+                placeholder="alice@example.com"
+                aria-invalid={Boolean(fieldErrors.login)}
+              />
+              {fieldErrors.login && <p className="mt-2 text-sm text-red-600">{fieldErrors.login}</p>}
             </div>
 
-            <h3 className="mt-5 text-4xl font-semibold leading-tight text-white">
-              Split expenses.
-              <br />
-              Stay connected.
-            </h3>
-            <p className="mt-4 text-sm leading-6 text-white/80">
-              Track shared expenses, settle balances effortlessly, and chat with your group members in real time.
-            </p>
-
-            <div className="mt-6 grid gap-3">
-              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
-                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
-                <div>
-                  <p className="text-sm font-semibold text-white">Real-time Expense Chat</p>
-                  <p className="mt-1 text-xs text-white/70">Coordinate in-app without leaving the flow.</p>
-                </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700" htmlFor="password">Password</label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  value={formData.password}
+                  onChange={updateField}
+                  className={`w-full rounded-2xl border bg-white px-4 py-3 pr-12 text-slate-900 outline-none transition focus:ring-4 ${
+                    fieldErrors.password ? "border-red-300 focus:border-red-500 focus:ring-red-50" : "border-slate-300 focus:border-indigo-500 focus:ring-indigo-50"
+                  }`}
+                  placeholder="Enter your password"
+                  aria-invalid={Boolean(fieldErrors.password)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
               </div>
+              {fieldErrors.password && <p className="mt-2 text-sm text-red-600">{fieldErrors.password}</p>}
+            </div>
 
-              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
-                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
-                <div>
-                  <p className="text-sm font-semibold text-white">Smart Balance Tracking</p>
-                  <p className="mt-1 text-xs text-white/70">See net balances and who owes whom.</p>
-                </div>
+            {submitError && <p className="text-sm text-red-600">{submitError}</p>}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="inline-flex w-full items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {submitting ? (
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />
+                  Logging in...
+                </span>
+              ) : "Login"}
+            </button>
+          </form>
+
+          <p className="mt-6 text-sm text-slate-600">
+            Need an account?{" "}
+            <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500 transition">Register here</Link>
+          </p>
+        </div>
+
+        {/* Promo panel */}
+        <aside className="relative hidden items-stretch overflow-hidden rounded-3xl p-8 lg:flex border border-indigo-100 shadow-xl bg-gradient-to-br from-indigo-500 to-violet-500">
+          <div className="pointer-events-none absolute -top-12 -left-12 h-40 w-40 rounded-full bg-white/20 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-12 -right-12 h-52 w-52 rounded-full bg-white/15 blur-2xl" />
+
+          <div className="relative flex w-full flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white backdrop-blur">
+                <span>✨</span> SaaS-ready expense sharing
               </div>
-
-              <div className="glass-card flex items-start gap-3 rounded-2xl bg-white/10 p-4 backdrop-blur">
-                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">✓</div>
-                <div>
-                  <p className="text-sm font-semibold text-white">Group Expense Management</p>
-                  <p className="mt-1 text-xs text-white/70">Add members, create expenses, and settle up.</p>
-                </div>
+              <h3 className="mt-5 text-4xl font-semibold leading-tight text-white">
+                Split expenses.<br />Stay connected.
+              </h3>
+              <p className="mt-4 text-sm leading-6 text-indigo-100">
+                Track shared expenses, settle balances effortlessly, and chat in real time.
+              </p>
+              <div className="mt-6 grid gap-3">
+                {[
+                  { title: "Real-time Expense Chat", sub: "Coordinate in-app without leaving the flow." },
+                  { title: "Smart Balance Tracking", sub: "See net balances and who owes whom." },
+                  { title: "Group Expense Management", sub: "Add members, create expenses, and settle up." },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-start gap-3 rounded-2xl bg-white/15 p-4">
+                    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/25 text-white font-bold">✓</div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">{item.title}</p>
+                      <p className="mt-1 text-xs text-indigo-100">{item.sub}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-
-          <div className="mt-8">
-            <div className="rounded-2xl bg-white/10 px-4 py-3 text-xs text-white/85 backdrop-blur">
+            <div className="mt-8 rounded-2xl bg-white/15 px-4 py-3 text-xs text-indigo-50">
               Trusted by students, roommates, travellers, and teams.
             </div>
           </div>
-        </div>
-      </aside>
-    </section>
+        </aside>
+      </section>
+    </div>
   );
 }

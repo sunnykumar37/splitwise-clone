@@ -21,7 +21,11 @@ export default function AppLayout() {
   };
 
   return (
-    <div className="min-h-screen text-slate-900">
+    <div className="relative min-h-screen text-slate-900">
+      {/* Subtle page-wide background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-br from-white via-indigo-50/60 to-violet-50/50" />
+      <div className="pointer-events-none fixed -top-40 -right-40 -z-10 h-[480px] w-[480px] rounded-full bg-indigo-200/30 blur-3xl" />
+      <div className="pointer-events-none fixed -bottom-40 -left-40 -z-10 h-[480px] w-[480px] rounded-full bg-violet-200/30 blur-3xl" />
       <header className="sticky top-0 z-10 border-b border-slate-200/70 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>

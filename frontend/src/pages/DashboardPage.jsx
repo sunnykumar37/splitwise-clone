@@ -136,21 +136,30 @@ export default function DashboardPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Total You Owe</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">
+        <div className="rounded-3xl border border-red-100 bg-gradient-to-br from-red-50 to-rose-100 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 text-base">💸</span>
+            <p className="text-sm font-medium text-red-600">Total You Owe</p>
+          </div>
+          <p className="mt-3 text-3xl font-semibold text-red-700">
             {formatMoney(summary?.total_you_owe)}
           </p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Total You Are Owed</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">
+        <div className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-100 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-base">💰</span>
+            <p className="text-sm font-medium text-emerald-600">Total You Are Owed</p>
+          </div>
+          <p className="mt-3 text-3xl font-semibold text-emerald-700">
             {formatMoney(summary?.total_you_are_owed)}
           </p>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-slate-500">Net Balance</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">
+        <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-100 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-base">⚖️</span>
+            <p className="text-sm font-medium text-blue-600">Net Balance</p>
+          </div>
+          <p className="mt-3 text-3xl font-semibold text-blue-700">
             {formatMoney(summary?.net_balance)}
           </p>
         </div>
@@ -174,25 +183,36 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {groups.map((group) => (
+              {groups.map((group, idx) => {
+                const palettes = [
+                  { border: "border-l-indigo-400", badge: "bg-indigo-100 text-indigo-700", dot: "bg-indigo-400" },
+                  { border: "border-l-emerald-400", badge: "bg-emerald-100 text-emerald-700", dot: "bg-emerald-400" },
+                  { border: "border-l-rose-400", badge: "bg-rose-100 text-rose-700", dot: "bg-rose-400" },
+                  { border: "border-l-amber-400", badge: "bg-amber-100 text-amber-700", dot: "bg-amber-400" },
+                  { border: "border-l-purple-400", badge: "bg-purple-100 text-purple-700", dot: "bg-purple-400" },
+                  { border: "border-l-cyan-400", badge: "bg-cyan-100 text-cyan-700", dot: "bg-cyan-400" },
+                ];
+                const p = palettes[idx % palettes.length];
+                return (
                 <Link
                   key={group.id}
                   to={`/groups/${group.id}`}
-                  className="rounded-2xl border border-slate-200 p-5 transition hover:border-brand-600 hover:bg-brand-50"
+                  className={`rounded-2xl border border-slate-200 border-l-4 ${p.border} p-5 transition hover:shadow-md hover:border-slate-300 bg-white`}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h4 className="text-lg font-semibold text-slate-900">{group.name}</h4>
-                      <p className="mt-1 text-sm text-slate-600">
+                      <p className="mt-1 text-sm text-slate-500">
                         {group.description || "No description provided."}
                       </p>
                     </div>
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${p.badge}`}>
                       {group.member_count || 0} members
                     </span>
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
